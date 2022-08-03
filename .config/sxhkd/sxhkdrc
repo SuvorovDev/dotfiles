@@ -1,3 +1,5 @@
+super + F2
+	bash ~/.config/rofi-wifi-menu/rofi-wifi-menu.sh
 #
 # wm independent hotkeys
 #
@@ -19,11 +21,11 @@ super + shift + Escape
 #
 
 # quit/restart bspwm
-super + alt + {q,r}
+super + alt + {r}
 	bspc {quit,wm -r}
 
 # close and kill
-super + {_,shift + }w
+super + {_,shift + }q
 	bspc node -{c,k}
 
 # alternate between the tiled and monocle layout

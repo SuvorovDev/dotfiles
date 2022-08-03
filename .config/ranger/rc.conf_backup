@@ -164,10 +164,10 @@ set draw_progress_bar_in_status_bar true
 # Separators are vertical lines between columns.
 # Outline draws a box around all the columns.
 # Both combines the two.
-set draw_borders separators
+set draw_borders none
 
 # Display the directory name in tabs?
-set dirname_in_tabs true
+set dirname_in_tabs false
 
 # Enable the mouse support?
 set mouse_enabled true
@@ -350,7 +350,7 @@ map     Q quitall
 map     q quit
 copymap q ZZ ZQ
 
-# map R     reload_cwd
+map R     reload_cwd
 map F     set freeze_files!
 map <C-r> reset
 map <C-l> redraw_window
@@ -358,7 +358,7 @@ map <C-c> abort
 map <esc> change_mode normal
 map ~ set viewmode!
 
-#map i display_file
+map i display_file
 map <A-j> scroll_preview 1
 map <A-k> scroll_preview -1
 map ? help
@@ -372,9 +372,9 @@ map !  console shell%space
 map @  console -p6 shell  %%s
 map #  console shell -p%space
 map s  console shell%space
-# map r  chain draw_possible_programs; console open_with%space
+map r  chain draw_possible_programs; console open_with%space
 map f  console find%space
-# map cd console cd%space
+map cd console cd%space
 
 map <C-p> chain console; eval fm.ui.console.history_move(-1)
 
@@ -389,14 +389,14 @@ map MH linemode sizehumanreadablemtime
 map Mt linemode metatitle
 
 # Tagging / Marking
-# map t       tag_toggle
-#map ut      tag_remove
+map t       tag_toggle
+map ut      tag_remove
 #map "<any>  tag_toggle tag=%any
 map <Space> mark_files toggle=True
 map v       mark_files all=True toggle=True
-#map uv      mark_files all=True val=False
+map uv      mark_files all=True val=False
 map V       toggle_visual_mode
-#map uV      toggle_visual_mode reverse=True
+map uV      toggle_visual_mode reverse=True
 
 # For the nostalgics: Midnight Commander bindings
 map <F1> help
@@ -410,19 +410,104 @@ map <F8> console delete
 #map <F8> console trash
 map <F10> exit
 
+# In case you work on a keyboard with dvorak layout
+map <UP>       move up=1
+map <DOWN>     move down=1
+map <LEFT>     move left=1
+map <RIGHT>    move right=1
+map <HOME>     move to=0
+map <END>      move to=-1
+map <PAGEDOWN> move down=1   pages=True
+map <PAGEUP>   move up=1     pages=True
+map <CR>       move right=1
+#map <DELETE>   console delete
+map <INSERT>   console touch%space
+
+# VIM-like
+copymap <UP>       k
+copymap <DOWN>     j
+copymap <LEFT>     h
+copymap <RIGHT>    l
+copymap <HOME>     gg
+copymap <END>      G
+copymap <PAGEDOWN> <C-F>
+copymap <PAGEUP>   <C-B>
+
 map J  move down=0.5  pages=True
 map K  move up=0.5    pages=True
 copymap J <C-D>
 copymap K <C-U>
 
+# Jumping around
+map H     history_go -1
+map L     history_go 1
+map ]     move_parent 1
+map [     move_parent -1
+map }     traverse
+map {     traverse_backwards
+map )     jump_non
+
+map gh cd ~
+map ge cd /etc
+map gu cd /usr
+map gd cd /dev
+map gl cd -r .
+map gL cd -r %f
+map go cd /opt
+map gv cd /var
+map gm cd /media
+map gi eval fm.cd('/run/media/' + os.getenv('USER'))
+map gM cd /mnt
+map gs cd /srv
+map gp cd /tmp
+map gr cd /
+map gR eval fm.cd(ranger.RANGERDIR)
+map g/ cd /
+map g? cd /usr/share/doc/ranger
+
 # External Programs
-#map E  edit
-#map du shell -p du --max-depth=1 -h --apparent-size
-#map dU shell -p du --max-depth=1 -h --apparent-size | sort -rh
+map E  edit
+map du shell -p du --max-depth=1 -h --apparent-size
+map dU shell -p du --max-depth=1 -h --apparent-size | sort -rh
 map yp yank path
 map yd yank dir
 map yn yank name
 map y. yank name_without_extension
+
+# Filesystem Operations
+map =  chmod
+
+map cw console rename%space
+map a  rename_append
+map A  eval fm.open_console('rename ' + fm.thisfile.relative_path.replace("%", "%%"))
+map I  eval fm.open_console('rename ' + fm.thisfile.relative_path.replace("%", "%%"), position=7)
+
+map pp paste
+map po paste overwrite=True
+map pP paste append=True
+map pO paste overwrite=True append=True
+map pl paste_symlink relative=False
+map pL paste_symlink relative=True
+map phl paste_hardlink
+map pht paste_hardlinked_subtree
+map pd console paste dest=
+map p`<any> paste dest=%any_path
+#map p'<any> paste dest=%any_path
+
+map dD console delete
+map dT console trash
+
+map dd cut
+map ud uncut
+map da cut mode=add
+map dr cut mode=remove
+map dt cut mode=toggle
+
+map yy copy
+map uy uncut
+map ya copy mode=add
+map yr copy mode=remove
+map yt copy mode=toggle
 
 # Temporary workarounds
 map dgg eval fm.cut(dirarg=dict(to=0), narg=quantifier)
@@ -436,14 +521,38 @@ map yk  eval fm.copy(dirarg=dict(up=1), narg=quantifier)
 
 # Searching
 map /  console search%space
-#map n  search_next
-#map N  search_next forward=False
-# map ct search_next order=tag
-# map cs search_next order=size
-# map ci search_next order=mimetype
-# map cc search_next order=ctime
-# map cm search_next order=mtime
-# map ca search_next order=atime
+map n  search_next
+map N  search_next forward=False
+map ct search_next order=tag
+map cs search_next order=size
+map ci search_next order=mimetype
+map cc search_next order=ctime
+map cm search_next order=mtime
+map ca search_next order=atime
+
+# Tabs
+map <C-n>     tab_new
+map <C-w>     tab_close
+map <TAB>     tab_move 1
+map <S-TAB>   tab_move -1
+map <A-Right> tab_move 1
+map <A-Left>  tab_move -1
+map gt        tab_move 1
+map gT        tab_move -1
+map gn        tab_new
+map gc        tab_close
+map uq        tab_restore
+map <a-1>     tab_open 1
+map <a-2>     tab_open 2
+map <a-3>     tab_open 3
+map <a-4>     tab_open 4
+map <a-5>     tab_open 5
+map <a-6>     tab_open 6
+map <a-7>     tab_open 7
+map <a-8>     tab_open 8
+map <a-9>     tab_open 9
+map <a-r>     tab_shift 1
+map <a-l>     tab_shift -1
 
 # Sorting
 map or set sort_reverse!
@@ -508,7 +617,7 @@ map .. filter_stack show
 map `<any>  enter_bookmark %any
 #map '<any>  enter_bookmark %any
 map m<any>  set_bookmark %any
-#map um<any> unset_bookmark %any
+map um<any> unset_bookmark %any
 
 map m<bg>   draw_bookmarks
 #copymap m<bg>  um<bg> `<bg> '<bg>
@@ -612,7 +721,7 @@ copypmap <PAGEUP>   p  b  <C-B>
 pmap     <C-l> redraw_window
 pmap     <ESC> pager_close
 copypmap <ESC> q Q i <F3>
-#pmap E      edit_file
+pmap E      edit_file
 
 # ===================================================================
 # == Taskview Keybindings
@@ -648,124 +757,3 @@ tmap <delete>   eval -q fm.ui.taskview.task_remove()
 tmap <C-l> redraw_window
 tmap <ESC> taskview_close
 copytmap <ESC> q Q w <C-c>
-
-
-# ===================================================================
-# ===================================================================
-# == MY BINDS
-# ===================================================================
-# ===================================================================
-
-# ========== arrows ==========
-map <UP>       move up=1
-map <DOWN>     move down=1
-map <LEFT>     move left=1
-map <RIGHT>    move right=1
-map <HOME>     move to=0
-map <END>      move to=-1
-map <PAGEDOWN> move down=1   pages=True
-map <PAGEUP>   move up=1     pages=True
-map <CR>       move right=1
-#map <DELETE>   console delete
-map <INSERT>   console touch%space
-
-# VIM-like
-copymap <UP>       u
-copymap <DOWN>     e
-copymap <LEFT>     n
-copymap <RIGHT>    i
-copymap <HOME>     U
-copymap <END>      E
-copymap <PAGEDOWN> <C-F>
-copymap <PAGEUP>   <C-B>
-
-# ========== Filesystem Operations ==========
-map =  chmod
-
-# map cw console rename%space
-map rr  rename_append
-map ri eval fm.open_console('rename ' + fm.thisfile.relative_path.replace("%", "%%"))
-map rn  eval fm.open_console('rename ' + fm.thisfile.relative_path.replace("%", "%%"), position=7)
-
-map pp paste
-# map po paste overwrite=True
-# map pP paste append=True
-# map pO paste overwrite=True append=True
-# map pl paste_symlink relative=False
-# map pL paste_symlink relative=True
-# map phl paste_hardlink
-# map pht paste_hardlinked_subtree
-# map pd console paste dest=
-# map p`<any> paste dest=%any_path
-#map p'<any> paste dest=%any_path
-
-map cc copy
-map ct cut
-map cu uncut
-# map ca copy mode=add
-# map cr copy mode=remove
-# map ct copy mode=toggle
-
-map dd cut
-map du uncut
-# map da cut mode=add
-# map dr cut mode=remove
-# map dt cut mode=toggle
-
-map dD console delete
-map dd console trash
-
-# ========== Tabs ==========
-map <C-n>     tab_new
-map <C-w>     tab_close
-
-map <TAB>     tab_move 1
-map <S-TAB>   tab_move -1
-map <A-Right> tab_move 1
-map <A-Left>  tab_move -1
-map ti        tab_move 1
-map tn        tab_move -1
-
-map tN        tab_new
-map tq        tab_close
-#map uq        tab_restore
-map <a-1>     tab_open 1
-map <a-2>     tab_open 2
-map <a-3>     tab_open 3
-map <a-4>     tab_open 4
-map <a-5>     tab_open 5
-map <a-6>     tab_open 6
-map <a-7>     tab_open 7
-map <a-8>     tab_open 8
-map <a-9>     tab_open 9
-map <a-i>     tab_shift 1
-map <a-n>     tab_shift -1
-
-# ========== Jumping around ==========
-map H     history_go -1
-map L     history_go 1
-map ]     move_parent 1
-map [     move_parent -1
-map }     traverse
-map {     traverse_backwards
-map )     jump_non
-
-map gh cd ~
-map gd cd ~/Downloads
-map gg cd ~/Git
-# map ge cd /etc
-# map gu cd /usr
-# map gd cd /dev
-# map gl cd -r .
-# map gL cd -r %f
-# map go cd /opt
-# map gv cd /var
-# map gm cd /media
-# map gi eval fm.cd('/run/media/' + os.getenv('USER'))
-# map gM cd /mnt
-# map gs cd /srv
-# map gp cd /tmp
-# map gr cd /
-# map gR eval fm.cd(ranger.RANGERDIR)
-# map g/ cd /
-# map g? cd /usr/share/doc/ranger
