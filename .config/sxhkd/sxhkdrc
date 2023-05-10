@@ -1,5 +1,3 @@
-super + F2
-	bash ~/.config/rofi-wifi-menu/rofi-wifi-menu.sh
 #
 # wm independent hotkeys
 #
