@@ -212,6 +212,7 @@ map c
 map e
 map f
 
+# Arrows
 map u up
 map e down
 map n updir
@@ -230,14 +231,14 @@ map y copy
 map U top
 map E bottom
 map R reload
-map C clear
+map c clear
 
 map l unselect
 map L invert
 
 map mf push %touch<space>
 map md push %mkdir<space>
-map ch chmod
+map CH chmod
 
 map zc convert
 map zg share
