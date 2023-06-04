@@ -34,14 +34,30 @@ cmd on-cd &{{
 }}
 on-cd # also run at startup
 
+# Trash cli bindings
 cmd trash ${{
-    set -f
-    if gio trash 2>/dev/null; then
-        gio trash $fx
+  files=$(printf "$fx" | tr '\n' ';')
+  while [ "$files" ]; do
+    # extract the substring from start of string up to delimiter.
+    # this is the first "element" of the string.
+    file=${files%%;*}
+
+    trash-put "$(basename "$file")"
+    # if there's only one element left, set `files` to an empty string.
+    # this causes us to exit this `while` loop.
+    # else, we delete the first "element" of the string from files, and move onto the next.
+    if [ "$files" = "$file" ]; then
+      files=''
     else
-        mkdir -p ~/.trash
-        mv --force $fx ~/.trash
+      files="${files#*;}"
     fi
+  done
+}}
+
+cmd trash_clear %trash-empty
+
+cmd trash_restore ${{
+  trash-restore
 }}
 
 cmd delete ${{
@@ -135,12 +151,22 @@ cmd metadata ${{
 cmd moveto ${{
 	clear; tput cup $(($(tput lines)/3)); tput bold
 	set -f
-	clear; echo "Move to where?"
-	dest="$(find ~/ /mnt/ -type d | fzf | sed 's|~|$HOME|')" &&
+	clear 
+	dest="$(find ~/ /mnt/ -type d | fzf --reverse --header='Move to where?' | sed 's|~|$HOME|')" &&
 	for x in $fx; do
 		eval mv -iv \"$x\" \"$dest\"
 	done &&
 	notify-send "🚚 File(s) moved." "File(s) moved to $dest."
+}}
+
+cmd fzf_jump ${{
+  res="$(find . -maxdepth 3 | fzf --reverse --header='Jump to location')"
+  if [ -f "$res" ]; then
+    cmd="select"
+  elif [ -d "$res" ]; then
+    cmd="cd"
+  fi
+  lf -remote "send $id $cmd \"$res\""
 }}
 
 # y (select for copy) and P to paste soft-link
@@ -163,6 +189,39 @@ cmd link %{{
     lf -remote "send clear"
 }}
 
+cmd bulkrename ${{
+    tmpfile_old="$(mktemp)"
+    tmpfile_new="$(mktemp)"
+
+    [ -n "$fs" ] && fs=$(basename -a $fs) || fs=$(ls)
+
+    echo "$fs" > "$tmpfile_old"
+    echo "$fs" > "$tmpfile_new"
+    nvim "$tmpfile_new"
+
+    [ "$(wc -l < "$tmpfile_old")" -eq "$(wc -l < "$tmpfile_new")" ] || { rm -f "$tmpfile_old" "$tmpfile_new"; exit 1; }
+
+    paste "$tmpfile_old" "$tmpfile_new" | while IFS="$(printf '\t')" read -r src dst
+    do
+        [ "$src" = "$dst" ] || [ -e "$dst" ] || mv -- "$src" "$dst"
+    done
+
+    rm -f "$tmpfile_old" "$tmpfile_new"
+    lf -remote "send $id unselect"
+}}
+
+cmd find_and_delete ${{
+    clear
+    printf "Search: "
+    read srch
+    find . -name "*$srch*"
+    printf "delete?[y/n] "
+    read ans
+    [ "$ans" = "y" ] && $(find . -type f -name "*$srch*" -delete)
+}}
+
+map df find_and_delete
+
 # show the result of execution of previous commands
 map ` !true
 
@@ -179,10 +238,7 @@ map <c-e> :updir; set dironly true; down; open; set dironly false
 
 map <enter> open
 
-# Basic
-map DD delete
-map dd trash
-map <delete> trash
+# Copy & Paste
 map p paste
 map P :link
 map xx cut
@@ -191,6 +247,13 @@ map mt moveto
 map yy copy
 map yn yank-name
 map yp yank-path
+
+# Trash and delete
+map DD delete
+map dd trash
+map dz trash_restore
+map dC trash_clear
+map <delete> trash
 
 # Selection
 map l unselect
@@ -208,6 +271,7 @@ map rc push re<c-u>       # new rename
 map rs :rename; cmd-home  # at the very beginning
 map rr :rename            # before extension
 map rE :rename; cmd-right # after extension
+map rb bulkrename
 
 # Creation and modification
 map mf push %touch<space>
@@ -219,6 +283,8 @@ map gd cd ~/Downloads
 map gh cd ~/
 map go cd ~/Obsidian\ Vault/
 map gg cd ~/Git
+map gt cd ~/.local/share/Trash/files/
+map gf fzf_jump
 
 map gL follow_link # Follow symlinks
 
@@ -228,3 +294,5 @@ map zs share
 map zu extract
 map za zip
 map zm metadata
+
+# Extensions
