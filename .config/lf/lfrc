@@ -38,14 +38,8 @@ on-cd # also run at startup
 cmd trash ${{
   files=$(printf "$fx" | tr '\n' ';')
   while [ "$files" ]; do
-    # extract the substring from start of string up to delimiter.
-    # this is the first "element" of the string.
     file=${files%%;*}
-
     trash-put "$(basename "$file")"
-    # if there's only one element left, set `files` to an empty string.
-    # this causes us to exit this `while` loop.
-    # else, we delete the first "element" of the string from files, and move onto the next.
     if [ "$files" = "$file" ]; then
       files=''
     else
@@ -144,7 +138,11 @@ cmd yank-name &basename -a -- $fx | rev | cut -d. -f2- | rev | head -c-1 | xclip
 
 cmd metadata ${{
   clear; exiftool $f
-	read -p "Press enter to continue"
+  case "$f" in
+    *.epub) word-count "$f" ;; # https://github.com/xavdid/epub-wordcount
+    *) ;;
+  esac
+  read -p "Press enter to continue"
 }}
 
 # Move file, use FZF
@@ -266,11 +264,11 @@ map . set hidden!
 map R reload
 
 # Rename
-map re :rename; cmd-end   # at the very end
+map ra :rename; cmd-end   # at the very end
 map rc push re<c-u>       # new rename
-map rs :rename; cmd-home  # at the very beginning
+map rh :rename; cmd-home  # at the very beginning
 map rr :rename            # before extension
-map rE :rename; cmd-right # after extension
+map re :rename; cmd-right # after extension
 map rb bulkrename
 
 # Creation and modification
