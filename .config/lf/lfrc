@@ -221,7 +221,7 @@ cmd find_and_delete ${{
 map df find_and_delete
 
 # show the result of execution of previous commands
-map ` !true
+map ~ !true
 
 # Arrows
 map u up

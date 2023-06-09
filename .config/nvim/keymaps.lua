@@ -24,3 +24,6 @@ map('', 'i', 'l', {})
 map('', 'I', '$', {}) -- K
 map('', 'k', 'n', {})
 map('', 'K', 'N', {})
+
+
+vim.cmd([[ set colorcolumn=80 ]])
