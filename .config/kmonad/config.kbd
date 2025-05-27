@@ -1,0 +1,57 @@
+(defcfg
+  input  (device-file "/dev/input/by-path/platform-i8042-serio-0-event-kbd")
+  output (uinput-sink "KMonad kbd")
+  fallthrough true
+  allow-cmd true
+)
+
+(defalias
+  fn1 (layer-toggle func1)
+  fn2 (layer-toggle func2)
+  spc (tap-hold-next-release 250 spc @fn2)
+)
+
+(defsrc
+  esc  f1   f2   f3   f4   f5   f6   f7   f8   f9   f10  f11  f12        home end  ins del
+  grv  1    2    3    4    5    6    7    8    9    0    -    =    bspc
+  tab  q    w    e    r    t    y    u    i    o    p    [    ]    ret
+  caps a    s    d    f    g    h    j    k    l    ;    '    \
+  lsft 102d z    x    c    v    b    n    m    ,    .    /    rsft       pgup up   pgdn
+  lctl wkup lmet lalt           spc            ralt ssrq rctl            left down rght
+)
+
+(deflayer colemak
+  esc  f1   f2   f3   f4   f5   f6   f7   f8   f9   f10  f11  f12        home end  ins del
+  grv  1    2    3    4    5    6    7    8    9    0    -    =    bspc
+  tab  q    w    f    p    g    j    l    u    y    ;    \    ret  ret
+  caps a    s    r    t    d    h    n    e    i    o    '    ret
+  lsft lsft z    x    c    v    b    k    m    ,    .    /    del        pgup up   pgdn
+  lctl wkup lalt lmet           @spc           @fn1 ssrq rctl            left down rght
+)
+
+(deflayer func1
+  _    _    _    _    _    _    _    _    _    _    _    _    _          _    _    _    _
+  _    _    _    _    _    _    _    _    _    _    _    _    _    _
+  _    1    2    3    4    5    6    7    8    9    0    _    _    _
+  _    !    @    #    $    &    +    -    =    *    \_   _    _
+  _    _    _    _    {    \(   [    ]    \)   }    %    ^    _          _    _    _
+  _    _    _    _              _              _    _    _               _    _    _
+)
+
+(deflayer func2
+  _    _    _    _    _    _    _    _    _    _    _    _    _          _    _    _    _
+  _    _    _    _    _    _    _    _    _    _    _    _    _    _
+  _    _    _    up   _    _    _    _    up   _    _    _    _    _
+  _    _    left down rght _    _    left down rght _    _    _
+  _    _    _    _    _    _    _    _    _    _    _    _    _          _    _    _
+  _    _    _    _              _              _    _    _               _    _    _
+)
+
+(deflayer func3
+  _    _    _    _    _    _    _    _    _    _    _    _    _          _    _    _    _
+  _    _    _    _    _    _    _    _    _    _    _    _    _    _
+  _    _    _    _    _    _    _    _    _    _    _    _    _    _
+  _    _    _    _    _    _    _    _    _    _    _    _    _
+  _    _    _    _    _    _    _    _    _    _    _    _    _          _    _    _
+  _    _    _    _              _              _    _    _               _    _    _
+)
