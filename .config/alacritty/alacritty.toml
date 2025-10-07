@@ -3,12 +3,15 @@ TERM = "xterm-256color"
 
 [window]
 
-padding.x = 14
-padding.y = 14
+padding.x = 12
+padding.y = 12
 
 [general]
 import = [
 	"~/.config/alacritty/themes/selenized-dark.toml",
 ]
 
+[font]
+normal = { family = "Hack Nerd Font Mono" }
+size = 10
 #opacity = 0.9
