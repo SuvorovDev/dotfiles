@@ -25,6 +25,8 @@ vim.keymap.set('n', '<C-i>', '<C-w><C-l>', { desc = 'Move focus to the right win
 vim.keymap.set('n', '<C-e>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-u>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
+vim.keymap.set('n', '|', ':vsplit<CR>')
+
 -- NeoTree
 vim.keymap.set('n', '<leader>e', ':Neotree left toggle reveal<CR>')
 

@@ -4,7 +4,7 @@ local mappings = {
     { modes = { "n", "o", "x" }, lhs = "u", rhs = "k", desc = "Up (k)" },
     { modes = { "n", "o", "x" }, lhs = "e", rhs = "j", desc = "Down (j)" },
     { modes = { "n", "o", "x" }, lhs = "i", rhs = "l", desc = "Right (l)" },
-    
+
     { modes = { "n", "o", "x" }, lhs = "N", rhs = "J", desc = "Left (h)" },
     { modes = { "n", "o", "x" }, lhs = "U", rhs = "H", desc = "Up (k)" },
     { modes = { "n", "o", "x" }, lhs = "E", rhs = "L", desc = "Down (j)" },
