@@ -1,0 +1,20 @@
+{
+    "layer": "top",
+    "output": "eDP-1",
+    "modules-left": ["hyprland/workspaces", "hyprland/mode"],
+    "modules-center": ["hyprland/window"],
+    "modules-right": ["tray", "battery", "clock"],
+    "hyprland/window": {
+        "max-length": 50
+    },
+    "battery": {
+        "format": "{icon}   {capacity}%",
+        "format-icons": ["", "", "", "", ""]
+    },
+    "clock": {
+        "format-alt": "{:%a, %d. %b  %H:%M}"
+    },
+    "tray": {
+        "spacing": 10
+    }
+}

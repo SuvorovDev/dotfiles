@@ -5,7 +5,7 @@ return {
             -- local lspconfig = require('lspconfig')
             -- lspconfig.lua_ls.setup {}
             -- lspconfig.gopls.setup {}
-            vim.lsp.enable('lua_ls', 'gopls', 'eslint', 'ts_ls')
+            vim.lsp.enable('lua_ls', 'gopls', 'eslint')
             vim.lsp.config('lua_ls', {
                 settings = {
                     Lua = {
